@@ -90,8 +90,32 @@ class Perceptron(object):
         plt.plot(xx, yy)
 
         plt.grid()
-        plt.pause(1)
+        plt.pause(2)
 
+
+# ----------------------------------------------------------------------
+#                             样本介绍
+#  1. 标题: 鸢尾花（Iris Plants Database）
+#  2. 来源：
+#     (a) 作者: R.A. Fisher
+#     (b) 捐献者: Michael Marshall (MARSHALL%PLU@io.arc.nasa.gov)
+#     (c) 日期: July, 1988
+#  3. 样本
+#     (a) 数量: 150份样本（150行）
+#     (b) 类型: 3个类型（每50个样本一个类型）
+#               第1类（1-50）-- Iris Setosa
+#               第2类（51-100）-- Iris Versicolour
+#               第3类（101-150）-- Iris Virginica
+#     (c) 特征/维度: 共5个特征/维度，前4个是数值型，第5个是分类
+#         1. sepal length in cm  花萼长度
+#         2. sepal width in cm   花萼宽度
+#         3. petal length in cm  花瓣长度
+#         4. petal width in cm   花瓣宽度
+#         5. class:              花名（取值为Iris-setosa、Iris-versicolor、Iris-virginica中的一种）
+#            -- Iris Setosa
+#            -- Iris Versicolour
+#            -- Iris Virginica
+# ----------------------------------------------------------------------
 
 if __name__ == '__main__':
     # 加载数据
