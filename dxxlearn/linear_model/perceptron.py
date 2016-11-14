@@ -66,6 +66,37 @@ class Perceptron(object):
                     self.plot_process(X)
                 # 此处本应该加上判断模型是否训练完成的代码，但无所谓
 
+
+    """
+        自适应线性神经元
+        这个是感知机的另一种实现方式
+        主要区别在于激活函数以及损失函数的选择上
+        可以得到一个最优的决策面
+    """
+    def train(self, X, y, isshow=False):
+        n_samples, n_features = X.shape #获得数据样本的大小
+        self.w = np.zeros(n_features, dtype=np.float64) #参数W
+        self.cost = []
+
+        # standardization of data
+        X[:, 1] = (X[:, 1] - X[:, 1].mean()) / X[:, 1].std()
+        X[:, 2] = (X[:, 2] - X[:, 2].mean()) / X[:, 2].std()
+
+        if isshow == True:
+            plt.ion()
+
+        for t in range(self.n_iter):
+            output = self.net_input(X)
+            errors = y - output
+            self.w += self.eta * X.T.dot(errors)
+            self.cost.append((errors**2).sum()/2.0)
+            if (t%20 == 0 and isshow):
+                print t
+                self.plot_process(X)
+
+        return self.cost
+
+
     """
         预测样本类别
         X   [n_samples, n_features]二维向量，数据样本集合，其第一列全部为1
@@ -74,6 +105,15 @@ class Perceptron(object):
     def predict(self, X):
         X = np.atleast_2d(X)#如果是一维向量，转换为二维向量
         return np.sign(np.dot(X, self.w))
+
+    """
+        计算网络输入
+        X   [n_samples, n_features]二维向量，数据样本集合，其第一列全部为1
+        return 网络在激活函数后的结果
+    """
+    def net_input(self, X):
+        X = np.atleast_2d(X)#如果是一维向量，转换为二维向量
+        return np.dot(X, self.w)
 
     """
         绘图函数
@@ -90,7 +130,7 @@ class Perceptron(object):
         plt.plot(xx, yy)
 
         plt.grid()
-        plt.pause(2)
+        plt.pause(1)
 
 
 # ----------------------------------------------------------------------
@@ -110,7 +150,7 @@ class Perceptron(object):
 #         1. sepal length in cm  花萼长度
 #         2. sepal width in cm   花萼宽度
 #         3. petal length in cm  花瓣长度
-#         4. petal width in cm   花瓣宽度
+#         4. petal width in cm    花瓣宽度
 #         5. class:              花名（取值为Iris-setosa、Iris-versicolor、Iris-virginica中的一种）
 #            -- Iris Setosa
 #            -- Iris Versicolour
@@ -132,3 +172,7 @@ if __name__ == '__main__':
     elif choose == 2:
         clf = Perceptron(200, 0.1)
         clf.fit(X, y, "SGD", True)
+    elif choose == 3:
+        clf = Perceptron(300, 0.001)
+        clf.train(X, y, True)
+
