@@ -73,20 +73,16 @@ class Perceptron(object):
         主要区别在于激活函数以及损失函数的选择上
         可以得到一个最优的决策面
     """
-    def train(self, X, y, isshow=False):
+    def train(self, X, y, activation_func, isshow=False, w_in=1, ):
         n_samples, n_features = X.shape #获得数据样本的大小
-        self.w = np.zeros(n_features, dtype=np.float64) #参数W
+        self.w = w_in*np.ones(n_features, dtype=np.float64) #参数W
         self.cost = []
-
-        # standardization of data
-        X[:, 1] = (X[:, 1] - X[:, 1].mean()) / X[:, 1].std()
-        X[:, 2] = (X[:, 2] - X[:, 2].mean()) / X[:, 2].std()
 
         if isshow == True:
             plt.ion()
 
         for t in range(self.n_iter):
-            output = self.net_input(X)
+            output = activation_func(X)
             errors = y - output
             self.w += self.eta * X.T.dot(errors)
             self.cost.append((errors**2).sum()/2.0)
@@ -114,6 +110,11 @@ class Perceptron(object):
     def net_input(self, X):
         X = np.atleast_2d(X)#如果是一维向量，转换为二维向量
         return np.dot(X, self.w)
+
+
+    def sigmoid(self, x):
+        y = 1.0 / (1.0 + np.exp(-np.dot(x, self.w)))
+        return y
 
     """
         绘图函数
@@ -173,6 +174,17 @@ if __name__ == '__main__':
         clf = Perceptron(200, 0.1)
         clf.fit(X, y, "SGD", True)
     elif choose == 3:
-        clf = Perceptron(300, 0.001)
-        clf.train(X, y, True)
+        # standardization of data
+        X[:, 1] = (X[:, 1] - X[:, 1].mean()) / X[:, 1].std()
+        X[:, 2] = (X[:, 2] - X[:, 2].mean()) / X[:, 2].std()
+        clf = Perceptron(300, 0.01)
+        clf.train(X, y, clf.net_input, True)
+    elif choose == 4:
+        clf = Perceptron(300, 0.01)
+        cost1 = clf.train(np.array([[1, 1]]), [0], clf.sigmoid, w_in=2)
+        cost2 = clf.train(np.array([[1, 1]]), [0], clf.sigmoid, w_in=0.6)
+        plt.plot(cost1)
+        plt.plot(cost2)
+        plt.grid()
+        plt.show()
 
